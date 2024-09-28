@@ -1,0 +1,222 @@
+/* basvuru.component.css */
+
+/* Genel Stil */
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+/* Logo konteyneri stili */
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-container img {
+    max-width: 150px;
+    width: 100%;
+    height: auto;
+}
+
+/* Animasyonlu adım konteyneri */
+.step-container {
+    width: 100%;
+}
+
+/* Tamamlandı mesajı için stil */
+.completed-container {
+    text-align: center;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+/* Hata mesajları için stil */
+.error {
+    color: red; /* Hata mesajları kırmızı kalsın */
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.required {
+    color: red;
+    margin-left: 5px;
+}
+
+/* Form konteyneri */
+.form-container {
+    position: relative;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 100%;
+    margin: 20px auto;
+}
+
+/* Progress Bar */
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+    list-style-type: none;
+    padding: 0;
+}
+
+.progress-bar span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+.progress-bar span.active,
+.progress-bar span.completed {
+    background-color: #5076f6; /* Mavi tonuna göre düzenlendi */
+    color: white;
+}
+
+.progress-bar:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 4px;
+    background-color: #ddd;
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+.progress-bar span:not(:last-child):after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: calc((100% - 40px) / 3);
+    height: 4px;
+    background-color: #ddd;
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+.progress-bar span.completed:not(:last-child):after {
+    background-color: #5076f6;
+}
+
+/* Form Stili */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+form input[type="radio"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+form input[type="radio"] + label {
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+/* Form Navigasyonu */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #5076f6; /* Butonlar mavi tonuna göre düzenlendi */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+}
+
+button:disabled {
+    background-color: #ccc;
+}
+
+button:hover:not(:disabled) {
+    background-color: #3e5ec4; /* Daha koyu mavi tonları */
+}
+
+/* Profil fotoğrafı önizleme stili */
+.profile-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+/* Başvuru Özeti için Stil */
+.summary {
+    text-align: center;
+    margin-top: 20px;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+.profile-summary {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+/* Başlıklar */
+h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+/* Diğer Metinler */
+p, label, input, button {
+    font-family: 'Montserrat', sans-serif;
+    color: black; /* Metin rengini siyah yaptık */
+}
+
+/* Linkler */
+a {
+    color: #5076f6; /* Link rengini ayarladık */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

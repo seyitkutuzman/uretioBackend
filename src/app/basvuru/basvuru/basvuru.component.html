@@ -1,0 +1,190 @@
+    <div class="form-container">
+        <div class="logo-container">
+            <img src="assets/images/logo.png" alt="Logo">
+        </div>
+        <!-- Adım İlerleme Çubuğu -->
+        <ul class="progress-bar">
+            <span [ngClass]="{'active': currentStep === 0, 'completed': currentStep >= 1}">1</span>
+            <span [ngClass]="{'active': currentStep === 1, 'completed': currentStep >= 2}">2</span>
+            <span [ngClass]="{'active': currentStep === 2, 'completed': currentStep >= 3}">3</span>
+            <span [ngClass]="{'active': currentStep === 3, 'completed': currentStep >= 4}">4</span>
+        </ul>
+
+        <!-- Kişisel Bilgiler Adımı -->
+        <div *ngIf="currentStep === 0" @stepAnimation class="step-container">
+            <h3>Kişisel Bilgiler</h3>
+            <form [formGroup]="kisiselForm">
+                
+                <label>Profil Fotoğrafı</label>
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+                <div *ngIf="selectedImage">
+                    <img [src]="selectedImage" alt="Profil Fotoğrafı" class="profile-preview" />
+                </div>
+                <div class="image-note">
+                    <small>Profil fotoğrafı boyutları en az 400x400 piksel olmalıdır.</small> <!-- Uyarı eklendi -->
+                </div>
+                <label>Ad Soyad <span class="required">*</span></label>
+                <input formControlName="adSoyad" type="text" placeholder="Ad Soyad" />
+                <div class="error" *ngIf="kisiselForm.get('adSoyad')?.invalid && (kisiselForm.get('adSoyad')?.touched || kisiselForm.get('adSoyad')?.dirty)">
+                    Ad Soyad zorunludur.
+                </div>
+
+                <label>Doğum Yılı <span class="required">*</span></label>
+                <input formControlName="dogumYili" type="number" placeholder="Doğum Yılı" />
+                <div class="error" *ngIf="kisiselForm.get('dogumYili')?.invalid && (kisiselForm.get('dogumYili')?.touched || kisiselForm.get('dogumYili')?.dirty)">
+                    Doğum Yılı zorunludur.
+                </div>
+
+                <label>Cinsiyet <span class="required">*</span></label>
+                <div>
+                    <label><input formControlName="cinsiyet" type="radio" value="Erkek" /> Erkek</label>
+                    <label><input formControlName="cinsiyet" type="radio" value="Kadın" /> Kadın</label>
+                    <label><input formControlName="cinsiyet" type="radio" value="Diğer" /> Diğer</label>
+                </div>
+                <div class="error" *ngIf="kisiselForm.get('cinsiyet')?.invalid && (kisiselForm.get('cinsiyet')?.touched || kisiselForm.get('cinsiyet')?.dirty)">
+                    Cinsiyet seçimi zorunludur.
+                </div>
+
+                <label>Meslek <span class="required">*</span></label>
+                <input formControlName="meslek" type="text" placeholder="Meslek" />
+                <div class="error" *ngIf="kisiselForm.get('meslek')?.invalid && (kisiselForm.get('meslek')?.touched || kisiselForm.get('meslek')?.dirty)">
+                    Meslek zorunludur.
+                </div>
+
+                <label>İçerik Ürettiğiniz Alanlar <span class="required">*</span></label>
+                <input formControlName="icerikUrettiginAlanlar" type="text" placeholder="İçerik Alanları" />
+                <div class="error" *ngIf="kisiselForm.get('icerikUrettiginAlanlar')?.invalid && (kisiselForm.get('icerikUrettiginAlanlar')?.touched || kisiselForm.get('icerikUrettiginAlanlar')?.dirty)">
+                    Bu alan zorunludur.
+                </div>
+            </form>
+        </div>
+
+        <!-- İletişim Bilgileri Adımı -->
+        <div *ngIf="currentStep === 1" @stepAnimation class="step-container">
+            <h3>İletişim Bilgileri</h3>
+            <form [formGroup]="iletisimForm">
+                <label>Telefon Numarası <span class="required">*</span></label>
+                <input formControlName="telefon" type="text" placeholder="Telefon Numarası" />
+                <div class="error" *ngIf="iletisimForm.get('telefon')?.invalid && (iletisimForm.get('telefon')?.touched || iletisimForm.get('telefon')?.dirty)">
+                    <div *ngIf="iletisimForm.get('telefon')?.errors?.['required']">
+                        Telefon numarası zorunludur.
+                    </div>
+                    <div *ngIf="iletisimForm.get('telefon')?.errors?.['pattern']">
+                        Geçerli bir telefon numarası giriniz. (5xxxxxxxxx formatında)
+                    </div>
+                </div>
+
+                <label>Şehir <span class="required">*</span></label>
+                <input formControlName="sehir" type="text" placeholder="Şehir" />
+                <div class="error" *ngIf="iletisimForm.get('sehir')?.invalid && (iletisimForm.get('sehir')?.touched || iletisimForm.get('sehir')?.dirty)">
+                    Şehir zorunludur.
+                </div>
+
+                <label>Kargo Adresi <span class="required">*</span></label>
+                <input formControlName="kargoAdresi" type="text" placeholder="Kargo Adresi" />
+                <div class="error" *ngIf="iletisimForm.get('kargoAdresi')?.invalid && (iletisimForm.get('kargoAdresi')?.touched || iletisimForm.get('kargoAdresi')?.dirty)">
+                    Kargo adresi zorunludur.
+                </div>
+            </form>
+        </div>
+
+        <!-- Aile Durumu Adımı -->
+        <div *ngIf="currentStep === 2" @stepAnimation class="step-container">
+            <h3>Aile Durumu</h3>
+            <form [formGroup]="aileForm">
+                <label>İlişki Durumu <span class="required">*</span></label>
+                <div>
+                    <label><input formControlName="iliskiDurumu" type="radio" value="Bekar" /> Bekar</label>
+                    <label><input formControlName="iliskiDurumu" type="radio" value="Evli" /> Evli</label>
+                    <label><input formControlName="iliskiDurumu" type="radio" value="Nişanlı" /> Nişanlı</label>
+                    <label><input formControlName="iliskiDurumu" type="radio" value="Nişanlı" /> Erkek/Kız Arkadaşı Var</label>
+                </div>
+                <div class="error" *ngIf="aileForm.get('iliskiDurumu')?.invalid && (aileForm.get('iliskiDurumu')?.touched || aileForm.get('iliskiDurumu')?.dirty)">
+                    İlişki durumu seçimi zorunludur.
+                </div>
+
+                <label>Çocuğunuz var mı? <span class="required">*</span></label>
+                <div>
+                    <label><input formControlName="cocukDurumu" type="radio" value="Yok" /> Hayır</label>
+                    <label><input formControlName="cocukDurumu" type="radio" value="Bir Çocuk" /> Evet, bir çocuğum var</label>
+                    <label><input formControlName="cocukDurumu" type="radio" value="Birden Fazla Çocuk" /> Evet, birden fazla çocuğum var</label>
+                </div>
+                <div class="error" *ngIf="aileForm.get('cocukDurumu')?.invalid && (aileForm.get('cocukDurumu')?.touched || aileForm.get('cocukDurumu')?.dirty)">
+                    Bu alanın seçimi zorunludur.
+                </div>
+
+                <label>Evcil Hayvanınız var mı? <span class="required">*</span></label>
+                <div>
+                    <label><input formControlName="evcilHayvanDurumu" type="radio" value="Yok" /> Hayır</label>
+                    <label><input formControlName="evcilHayvanDurumu" type="radio" value="Var" /> Evet, var</label>
+                </div>
+                <div class="error" *ngIf="aileForm.get('evcilHayvanDurumu')?.invalid && (aileForm.get('evcilHayvanDurumu')?.touched || aileForm.get('evcilHayvanDurumu')?.dirty)">
+                    Bu alanın seçimi zorunludur.
+                </div>
+            </form>
+        </div>
+
+        <!-- Portfolyo Adımı -->
+        <div *ngIf="currentStep === 3" @stepAnimation class="step-container">
+            <h3>Portfolyo</h3>
+            <form [formGroup]="portfolyoForm">
+                <label>YouTube Profil</label>
+                <input formControlName="youtubeProfil" type="text" placeholder="YouTube Profil" />
+
+                <label>Instagram Profil <span class="required">*</span></label>
+                <input formControlName="instagramProfil" type="text" placeholder="Instagram Profil" />
+                <div class="error" *ngIf="portfolyoForm.get('instagramProfil')?.invalid && (portfolyoForm.get('instagramProfil')?.touched || portfolyoForm.get('instagramProfil')?.dirty)">
+                    Instagram profiliniz zorunludur.
+                </div>
+
+                <label>TikTok Profil</label>
+                <input formControlName="tiktokProfil" type="text" placeholder="TikTok Profil" />
+
+                <label>Çektiğiniz Video 1 <span class="required">*</span></label>
+                <input formControlName="cekilenVideo1" type="text" placeholder="Video 1 Linki" />
+                <div class="error" *ngIf="portfolyoForm.get('cekilenVideo1')?.invalid && (portfolyoForm.get('cekilenVideo1')?.touched || portfolyoForm.get('cekilenVideo1')?.dirty)">
+                    En az bir video linki zorunludur.
+                </div>
+
+                <label>Çektiğiniz Video 2</label>
+                <input formControlName="cekilenVideo2" type="text" placeholder="Video 2 Linki" />
+
+                <label>Çektiğiniz Video 3</label>
+                <input formControlName="cekilenVideo3" type="text" placeholder="Video 3 Linki" />
+            </form>
+        </div>
+
+        <!-- Tamamla Adımı -->
+        <div *ngIf="currentStep === 4" class="completed-container" @stepAnimation>
+            <h2>Başvuru Tamamlandı</h2>
+            <p>Başvurunuz başarıyla tamamlandı. Lütfen son kontrolü yaparak başvurunuzu gönderin.</p>
+        </div>
+
+        <!-- Başvuru Alındı Mesajı -->
+    <!-- Mevcut kodunuzun içinde... -->
+
+    <!-- Başvuru Alındı Mesajı -->
+    <div *ngIf="currentStep === 5" class="completed-container" @stepAnimation>
+        <h2>Başvurunuz Alındı!</h2>
+        <p> Üretio ekibi, başvurunuzu gözden geçirecek ve size kısa sürede mail ve whatsapp yoluyla dönüş yapacak. Sıkı durun, yaratıcı işlerin başlangıcı yaklaşıyor! ✨</p>
+        
+        <!-- Başvuru Özeti -->
+        <div class="summary">
+            <h3>Başvuru Özeti</h3>
+            <img [src]="submittedData?.kisiselBilgiler?.profilFoto" alt="Profil Fotoğrafı" class="profile-summary" />
+            <p><strong>Ad Soyad:</strong> {{ submittedData?.kisiselBilgiler?.adSoyad }}</p>
+            <!-- İsteğe bağlı olarak diğer bilgileri de ekleyebilirsiniz -->
+        </div>
+    </div>
+
+
+        <!-- İleri ve Geri Butonları -->
+        <div class="form-navigation">
+            <button (click)="previousStep()" *ngIf="currentStep > 0 || currentStep < 5" [disabled]="isSubmitting">Geri</button>
+            <button (click)="nextStep()" *ngIf="currentStep < 4" [disabled]="isSubmitting">İleri</button>
+            <button (click)="onSubmit()" *ngIf="currentStep === 4" [disabled]="isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span *ngIf="!isSubmitting">Başvuruyu Tamamla</span>
+            </button>
+        </div>
+    </div>
