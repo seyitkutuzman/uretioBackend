@@ -15,6 +15,7 @@ namespace uretioBackend.Models
         public string ContentAreas { get; set; }
         public string? ProfilFotoYolu { get; set; }
         public string Phone { get; set; }
+        public string mail { get; set; }
         public string City { get; set; }
         public string ShippingAddress { get; set; }
         public string RelationshipStatus { get; set; }

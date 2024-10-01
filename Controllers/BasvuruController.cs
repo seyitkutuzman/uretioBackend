@@ -116,6 +116,7 @@ private async Task SendEmail(Basvuru basvuru)
                        $"Meslek: {basvuru.Profession}\n" +
                        $"İçerik Ürettiği Alanlar: {basvuru.ContentAreas}\n\n" +
                        $"Telefon: {basvuru.Phone}\n" +
+                       $"E-Mail: {basvuru.mail}\n" +
                        $"Şehir: {basvuru.City}\n" +
                        $"Kargo Adresi: {basvuru.ShippingAddress}\n\n" +
                        $"İlişki Durumu: {basvuru.RelationshipStatus}\n" +
