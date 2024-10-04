@@ -1,2 +1,7 @@
 /Migrations
 /Uploads
+/Publish
+/bin/Release/net8.0
+/bin/Debug/net8.0
+/bin
+/obj

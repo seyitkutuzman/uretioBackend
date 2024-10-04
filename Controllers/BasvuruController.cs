@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace uretioBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Basvurular")]
     [ApiController]
     public class BasvurularController : ControllerBase
     {
@@ -47,119 +47,118 @@ namespace uretioBackend.Controllers
         }
 
         // POST: api/Basvurular
-        [HttpPost]
-        public async Task<IActionResult> PostBasvuru([FromForm] Basvuru basvuru, IFormFile profilFoto)
+[HttpPost("basvuru")]
+public async Task<IActionResult> PostBasvuru([FromForm] Basvuru basvuru, IFormFile? profilFoto)  // profilFoto is now nullable
+{
+    if (basvuru == null)
+    {
+        return BadRequest("Başvuru verileri eksik.");
+    }
+
+    if (profilFoto != null)
+    {
+        // Profil fotoğrafını kaydetme işlemleri
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+        if (!Directory.Exists(uploadsFolder))
         {
-            if (basvuru == null)
-            {
-                return BadRequest("Başvuru verileri eksik.");
-            }
-
-            if (profilFoto != null)
-            {
-                // Profil fotoğrafını kaydetme işlemleri
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                var uniqueFileName = $"{Guid.NewGuid()}_{profilFoto.FileName}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await profilFoto.CopyToAsync(stream);
-                }
-
-                // Profil fotoğrafının dosya yolunu kaydediyoruz
-                basvuru.ProfilFotoYolu = uniqueFileName;
-            }
-            else
-            {
-                return BadRequest("Profil fotoğrafı yüklemek zorunludur.");
-            }
-
-            try
-            {
-                _context.Basvuru.Add(basvuru);
-                await _context.SaveChangesAsync();
-
-                // Başvuru kaydedildikten sonra mail gönder
-                await SendEmail(basvuru);
-
-                return CreatedAtAction(nameof(GetBasvuru), new { id = basvuru.Id }, basvuru);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Sunucu hatası: " + ex.InnerException?.Message);
-            }
+            Directory.CreateDirectory(uploadsFolder);
         }
 
-        // Mail gönderme fonksiyonu MailKit kullanarak güncellendi
-        // Mail gönderme fonksiyonu MailKit kullanarak güncellendi
-private async Task SendEmail(Basvuru basvuru)
-{
+        var uniqueFileName = $"{Guid.NewGuid()}_{profilFoto.FileName}";
+        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await profilFoto.CopyToAsync(stream);
+        }
+
+        // Profil fotoğrafının dosya yolunu kaydediyoruz
+        basvuru.ProfilFotoYolu = uniqueFileName;
+    }
+    else
+    {
+        // If no profile photo is uploaded, set ProfilFotoYolu to null or leave it as is.
+        basvuru.ProfilFotoYolu = null;
+    }
+
     try
     {
-        var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Uretio", "hello@uretio.com"));
-        message.To.Add(new MailboxAddress("", "seyit1903247@gmail.com"));
-        message.Subject = "Yeni Başvuru Alındı";
+        _context.Basvuru.Add(basvuru);
+        await _context.SaveChangesAsync();
 
-        // E-posta içeriğini oluşturuyoruz
-        var bodyBuilder = new BodyBuilder
-        {
-            TextBody = $"Merhaba, {basvuru.FullName} kişisinden yeni bir başvuru alındı.\n\n" +
-                       $"Doğum Yılı: {basvuru.BirthYear}\n" +
-                       $"Cinsiyet: {basvuru.Gender}\n" +
-                       $"Meslek: {basvuru.Profession}\n" +
-                       $"İçerik Ürettiği Alanlar: {basvuru.ContentAreas}\n\n" +
-                       $"Telefon: {basvuru.Phone}\n" +
-                       $"E-Mail: {basvuru.mail}\n" +
-                       $"Şehir: {basvuru.City}\n" +
-                       $"Kargo Adresi: {basvuru.ShippingAddress}\n\n" +
-                       $"İlişki Durumu: {basvuru.RelationshipStatus}\n" +
-                       $"Çocuk Durumu: {basvuru.HasChildren}\n" +
-                       $"Evcil Hayvan Durumu: {basvuru.HasPets}\n\n" +
-                       $"Instagram Profili: {basvuru.InstagramProfile}\n" +
-                       $"YouTube Profili: {basvuru.YouTubeProfile}\n" +
-                       $"TikTok Profili: {basvuru.TikTokProfile}\n\n" +
-                       $"Video 1: {basvuru.VideoLink1}\n" +
-                       $"Video 2: {basvuru.VideoLink2}\n" +
-                       $"Video 3: {basvuru.VideoLink3}"
-        };
+        // Başvuru kaydedildikten sonra mail gönder
+        await SendEmail(basvuru);
 
-        // Profil fotoğrafını e-postaya ekliyoruz
-        if (!string.IsNullOrEmpty(basvuru.ProfilFotoYolu))
-        {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", basvuru.ProfilFotoYolu);
-            if (System.IO.File.Exists(filePath))
-            {
-                bodyBuilder.Attachments.Add(filePath);
-            }
-        }
-
-        // E-posta gövdesini ayarla
-        message.Body = bodyBuilder.ToMessageBody();
-
-        // SMTP ayarlarını kullanarak mail gönder
-        using (var client = new SmtpClient())
-        {
-            await client.ConnectAsync("smtpout.secureserver.net", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync("hello@uretio.com", "Pea3-%-rF8hZNZ62");
-
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
-        }
+        return CreatedAtAction(nameof(GetBasvuru), new { id = basvuru.Id }, basvuru);
     }
     catch (Exception ex)
     {
-        // Hata durumunda loglama işlemi yapabilirsiniz
-        Console.WriteLine($"E-posta gönderim hatası: {ex.Message}");
+        return StatusCode(500, "Sunucu hatası: " + ex.InnerException?.Message);
     }
 }
 
+
+        private async Task SendEmail(Basvuru basvuru)
+        {
+            try
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Uretio", "hello@uretio.com"));
+                message.To.Add(new MailboxAddress("", "hello@uretio.com"));
+                message.Subject = "Yeni Başvuru Alındı";
+
+                // E-posta içeriğini oluşturuyoruz
+                var bodyBuilder = new BodyBuilder
+                {
+                    TextBody = $"Merhaba, {basvuru.FullName} kişisinden yeni bir başvuru alındı.\n\n" +
+                               $"Doğum Yılı: {basvuru.BirthYear}\n" +
+                               $"Cinsiyet: {basvuru.Gender}\n" +
+                               $"Meslek: {basvuru.Profession}\n" +
+                               $"İçerik Ürettiği Alanlar: {basvuru.ContentAreas}\n\n" +
+                               $"Telefon: {basvuru.Phone}\n" +
+                               $"E-Mail: {basvuru.mail}\n" +
+                               $"Şehir: {basvuru.City}\n" +
+                               $"Kargo Adresi: {basvuru.ShippingAddress}\n\n" +
+                               $"İlişki Durumu: {basvuru.RelationshipStatus}\n" +
+                               $"Çocuk Durumu: {basvuru.HasChildren}\n" +
+                               $"Evcil Hayvan Durumu: {basvuru.HasPets}\n\n" +
+                               $"Instagram Profili: {basvuru.InstagramProfile}\n" +
+                               $"YouTube Profili: {basvuru.YouTubeProfile}\n" +
+                               $"TikTok Profili: {basvuru.TikTokProfile}\n\n" +
+                               $"Video 1: {basvuru.VideoLink1}\n" +
+                               $"Video 2: {basvuru.VideoLink2}\n" +
+                               $"Video 3: {basvuru.VideoLink3}"
+                };
+
+                // Profil fotoğrafını e-postaya ekliyoruz
+                if (!string.IsNullOrEmpty(basvuru.ProfilFotoYolu))
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", basvuru.ProfilFotoYolu);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        bodyBuilder.Attachments.Add(filePath);
+                    }
+                }
+
+                // E-posta gövdesini ayarla
+                message.Body = bodyBuilder.ToMessageBody();
+
+                // SMTP ayarlarını kullanarak mail gönder
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync("smtpout.secureserver.net", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync("hello@uretio.com", "Pea3-%-rF8hZNZ62");
+
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda loglama işlemi yapabilirsiniz
+                Console.WriteLine($"E-posta gönderim hatası: {ex.Message}");
+            }
+        }
 
         // PUT: api/Basvurular/5
         [HttpPut("{id}")]

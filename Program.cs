@@ -13,17 +13,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // CORS ayarları
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()   // Tüm kaynaklara izin verir (Dilerseniz belli bir kaynağı belirleyebilirsiniz)
+              .AllowAnyMethod()   // Tüm HTTP metodlarına (GET, POST, PUT, DELETE vs.) izin verir
+              .AllowAnyHeader();  // Tüm başlıklara izin verir
+    });
 });
 
 var app = builder.Build();
 
-// Orta katmanları ekleyin
+// CORS'u uygulamak için ekleyin
 app.UseCors("AllowAll");
 
+// Orta katmanları ekleyin
 app.UseAuthorization();
 
 app.MapControllers();
