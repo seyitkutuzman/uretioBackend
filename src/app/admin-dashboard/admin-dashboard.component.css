@@ -1,0 +1,33 @@
+.admin-dashboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .admin-dashboard h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .admin-dashboard nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .admin-dashboard nav ul li {
+    margin-bottom: 15px;
+  }
+  
+  .admin-dashboard nav ul li a {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 18px;
+    transition: color 0.3s;
+  }
+  
+  .admin-dashboard nav ul li a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+  

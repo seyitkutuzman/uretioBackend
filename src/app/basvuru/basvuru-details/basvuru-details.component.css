@@ -1,0 +1,66 @@
+.basvuru-details {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .basvuru-details h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .basvuru-details p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .basvuru-details p strong {
+    display: inline-block;
+    width: 150px;
+  }
+  
+  .basvuru-details button {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+  
+  .basvuru-details button:hover {
+    background-color: #218838;
+  }
+  
+  .success-message {
+    margin-top: 20px;
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .error-message {
+    margin-top: 20px;
+    color: #dc3545;
+    font-weight: bold;
+  }
+  .basvuru-details .profile-photo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .basvuru-details .details-group {
+    margin-bottom: 30px;
+  }
+  
+  .basvuru-details h3 {
+    margin-top: 20px;
+    color: #555;
+  }
+  
+  

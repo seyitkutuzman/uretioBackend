@@ -1,0 +1,29 @@
+<div class="admin-login-container">
+    <div class="logo-container">
+      <img src="./assets/images/logo.png" alt="Logo" class="logo" />
+    </div>
+    <h2>Admin Girişi</h2>
+    <form [formGroup]="adminLoginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">E-posta</label>
+        <input type="email" id="email" formControlName="email" class="form-control" placeholder="E-posta adresinizi giriniz" />
+        <div *ngIf="adminLoginForm.get('email')?.invalid && adminLoginForm.get('email')?.touched" class="error">
+          Geçerli bir e-posta adresi giriniz.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input type="password" id="password" formControlName="password" class="form-control" placeholder="Şifrenizi giriniz" />
+        <div *ngIf="adminLoginForm.get('password')?.invalid && adminLoginForm.get('password')?.touched" class="error">
+          Şifre zorunludur.
+        </div>
+      </div>
+  
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="adminLoginForm.invalid">Giriş Yap</button>
+    </form>
+  </div>

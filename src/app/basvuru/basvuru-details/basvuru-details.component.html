@@ -1,0 +1,41 @@
+<div class="basvuru-details" *ngIf="basvuru">
+  <h2>Başvuru Detayları</h2>
+
+  <div class="details-group">
+    <h3>Kişisel Bilgiler</h3>
+    <p><strong>Ad Soyad:</strong> {{ basvuru.fullName }}</p>
+    <p><strong>T.C. Kimlik No:</strong> {{ basvuru.tckimlik }}</p>
+    <p><strong>Doğum Tarihi:</strong> {{ basvuru.dateOfBirth | date:'dd/MM/yyyy' }}</p>
+    <p><strong>Cinsiyet:</strong> {{ basvuru.gender }}</p>
+    <p><strong>Profil Fotoğrafı:</strong></p>
+    <img *ngIf="basvuru.profilFotoYolu" [src]="basvuru.profilFotoYolu" alt="Profil Fotoğrafı" class="profile-photo" />
+
+    <h3>İletişim Bilgileri</h3>
+    <p><strong>E-posta:</strong> {{ basvuru.mail }}</p>
+    <p><strong>Telefon:</strong> {{ basvuru.phone }}</p>
+    <p><strong>Şehir:</strong> {{ basvuru.city }}</p>
+    <p><strong>Kargo Adresi:</strong> {{ basvuru.shippingAddress }}</p>
+
+    <h3>Aile Durumu</h3>
+    <p><strong>İlişki Durumu:</strong> {{ basvuru.relationshipStatus }}</p>
+    <p><strong>Çocuk Durumu:</strong> {{ basvuru.hasChildren ? 'Var' : 'Yok' }}</p>
+    <p><strong>Evcil Hayvan Durumu:</strong> {{ basvuru.hasPets ? 'Var' : 'Yok' }}</p>
+
+    <h3>Portfolyo</h3>
+    <p><strong>YouTube Profili:</strong> {{ basvuru.youTubeProfile }}</p>
+    <p><strong>Instagram Profili:</strong> {{ basvuru.instagramProfile }}</p>
+    <p><strong>TikTok Profili:</strong> {{ basvuru.tikTokProfile }}</p>
+    <p><strong>Çekilen Video 1:</strong> {{ basvuru.videoLink1 }}</p>
+    <p><strong>Çekilen Video 2:</strong> {{ basvuru.videoLink2 }}</p>
+    <p><strong>Çekilen Video 3:</strong> {{ basvuru.videoLink3 }}</p>
+  </div>
+
+  <button (click)="createUser()">Kullanıcı Oluştur</button>
+
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

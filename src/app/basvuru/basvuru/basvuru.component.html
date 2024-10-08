@@ -74,6 +74,17 @@
                     </div>
                 </div>
 
+                <label>E-Mail<span class="required">*</span></label>
+                <input formControlName="mail" type="text" placeholder="E-Mail" />
+                <div class="error" *ngIf="iletisimForm.get('mail')?.invalid && (iletisimForm.get('mail')?.touched || iletisimForm.get('mail')?.dirty)">
+                    <div *ngIf="iletisimForm.get('mail')?.errors?.['required']">
+                        E-Mail adresi zorunludur.
+                    </div>
+                    <div *ngIf="iletisimForm.get('mail')?.errors?.['pattern']">
+                        Geçerli bir mail adresi giriniz. (xxx&#64;xxx.com.tr formatında)
+                    </div>
+                </div>
+
                 <label>Şehir <span class="required">*</span></label>
                 <input formControlName="sehir" type="text" placeholder="Şehir" />
                 <div class="error" *ngIf="iletisimForm.get('sehir')?.invalid && (iletisimForm.get('sehir')?.touched || iletisimForm.get('sehir')?.dirty)">
@@ -97,7 +108,7 @@
                     <label><input formControlName="iliskiDurumu" type="radio" value="Bekar" /> Bekar</label>
                     <label><input formControlName="iliskiDurumu" type="radio" value="Evli" /> Evli</label>
                     <label><input formControlName="iliskiDurumu" type="radio" value="Nişanlı" /> Nişanlı</label>
-                    <label><input formControlName="iliskiDurumu" type="radio" value="Nişanlı" /> Erkek/Kız Arkadaşı Var</label>
+                    <label><input formControlName="iliskiDurumu" type="radio" value="Erkek/Kız Arkadaşı Var" /> Erkek/Kız Arkadaşı Var</label>
                 </div>
                 <div class="error" *ngIf="aileForm.get('iliskiDurumu')?.invalid && (aileForm.get('iliskiDurumu')?.touched || aileForm.get('iliskiDurumu')?.dirty)">
                     İlişki durumu seçimi zorunludur.
@@ -154,16 +165,45 @@
             </form>
         </div>
 
-        <!-- Tamamla Adımı -->
         <div *ngIf="currentStep === 4" class="completed-container" @stepAnimation>
             <h2>Başvuru Tamamlandı</h2>
             <p>Başvurunuz başarıyla tamamlandı. Lütfen son kontrolü yaparak başvurunuzu gönderin.</p>
+        
+            <!-- Checkboxlar -->
+            <div class="consent-checkboxes" [formGroup]="basvuruForm">
+                <label>
+                    <input type="checkbox" formControlName="acikRiza"> 
+                    <a href="javascript:void(0)" (click)="openPopup('acikRizaMetni')">Açık Rıza Metni</a>
+                </label>
+            </div>
+            <div class="consent-checkboxes" [formGroup]="basvuruForm">
+                <label>
+                    <input type="checkbox" formControlName="aydinlatmaMetni"> 
+                    <a href="javascript:void(0)" (click)="openPopup('aydinlatmaMetni')">Aydınlatma Metni</a>
+                </label>
+            </div>
+            <div class="consent-checkboxes" [formGroup]="basvuruForm">
+                <label>
+                    <input type="checkbox" formControlName="gizlilikSozlesmesi"> 
+                    <a href="javascript:void(0)" (click)="openPopup('gizlilikSozlesmesi')">Gizlilik Sözleşmesi</a>
+                </label>
+            </div>
+        
+            <!-- Uyarı Mesajı -->
+            <div *ngIf="!allCheckboxesChecked" class="error">
+                Sözleşmeleri kabul etmeden başvurunuzu tamamlayamazsınız.
+            </div>
         </div>
+        <ng-template #popupTemplate let-metni="metni">
+            <div class="popup-overlay" (click)="closePopup()"></div>
+            <div class="popup-content">
+                <h3>{{ popupData.title }}</h3>
+                <p>{{ popupData.content }}</p>
+                <button (click)="closePopup()">Kapat</button>
+            </div>
+        </ng-template>
 
-        <!-- Başvuru Alındı Mesajı -->
-    <!-- Mevcut kodunuzun içinde... -->
-
-    <!-- Başvuru Alındı Mesajı -->
+         <!-- Başvuru Alındı Mesajı -->
     <div *ngIf="currentStep === 5" class="completed-container" @stepAnimation>
         <h2>Başvurunuz Alındı!</h2>
         <p> Üretio ekibi, başvurunuzu gözden geçirecek ve size kısa sürede mail ve whatsapp yoluyla dönüş yapacak. Sıkı durun, yaratıcı işlerin başlangıcı yaklaşıyor! ✨</p>
@@ -171,8 +211,9 @@
         <!-- Başvuru Özeti -->
         <div class="summary">
             <h3>Başvuru Özeti</h3>
-            <img [src]="submittedData?.kisiselBilgiler?.profilFoto" alt="Profil Fotoğrafı" class="profile-summary" />
+            <img [src]="submittedData?.kisiselBilgiler?.profilFoto" alt="Profil Fotoğrafı" class="profile-summary" *ngIf="submittedData?.kisiselBilgiler?.profilFoto" />
             <p><strong>Ad Soyad:</strong> {{ submittedData?.kisiselBilgiler?.adSoyad }}</p>
+            <p><strong>İçerik Ürettiği Alanlar:</strong> {{ submittedData?.kisiselBilgiler?.icerikUrettiginAlanlar}}</p>
             <!-- İsteğe bağlı olarak diğer bilgileri de ekleyebilirsiniz -->
         </div>
     </div>
@@ -180,9 +221,9 @@
 
         <!-- İleri ve Geri Butonları -->
         <div class="form-navigation">
-            <button (click)="previousStep()" *ngIf="currentStep > 0 || currentStep < 5" [disabled]="isSubmitting">Geri</button>
+            <button (click)="previousStep()" *ngIf="currentStep > 0 && currentStep < 5" [disabled]="isSubmitting">Geri</button>
             <button (click)="nextStep()" *ngIf="currentStep < 4" [disabled]="isSubmitting">İleri</button>
-            <button (click)="onSubmit()" *ngIf="currentStep === 4" [disabled]="isSubmitting">
+            <button (click)="onSubmit()" *ngIf="currentStep === 4 && allCheckboxesChecked" [disabled]="isSubmitting">
                 <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span *ngIf="!isSubmitting">Başvuruyu Tamamla</span>
             </button>

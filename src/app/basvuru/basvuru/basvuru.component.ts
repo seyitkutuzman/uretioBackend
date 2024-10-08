@@ -5,6 +5,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http'; // HttpClientModule import edildi
+import { API_URL, API_URL2 } from '../../constants';
+import { ViewChild, TemplateRef } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+
 
 @Component({
   selector: 'app-basvuru',
@@ -15,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http'; // HttpClientModule imp
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
-    HttpClientModule, // HttpClientModule imports dizisine eklendi
+    HttpClientModule
   ],
   animations: [
     trigger('stepAnimation', [
@@ -55,8 +60,12 @@ export class BasvuruComponent implements OnInit {
   profilFotoErrorMessage: string = '';
 
   submittedData: any = null;
+  allCheckboxesChecked: boolean = false;
+  popupData: any = null;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+  @ViewChild('popupTemplate') popupTemplate!: TemplateRef<any>;
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.basvuruForm = this.fb.group({
@@ -66,11 +75,12 @@ export class BasvuruComponent implements OnInit {
         cinsiyet: ['', Validators.required],
         meslek: ['', Validators.required],
         icerikUrettiginAlanlar: ['', Validators.required],
-        profilFoto: [null ],
+        profilFoto: [null],
       }),
       iletisimBilgileri: this.fb.group({
         telefon: ['', [Validators.required, Validators.pattern(/^5[0-9]{9}$/)]],
-        sehir: ['', Validators.required],
+        mail: ['', [Validators.required, Validators.email]],
+        sehir: ['', Validators.required], 
         kargoAdresi: ['', Validators.required],
       }),
       aileDurumu: this.fb.group({
@@ -85,8 +95,60 @@ export class BasvuruComponent implements OnInit {
         cekilenVideo1: ['', Validators.required],
         cekilenVideo2: [''],
         cekilenVideo3: [''],
-      })
+      }),
+      acikRiza: [false, Validators.requiredTrue],
+      aydinlatmaMetni: [false, Validators.requiredTrue],
+      gizlilikSozlesmesi: [false, Validators.requiredTrue],
     });
+
+    this.basvuruForm.valueChanges.subscribe(() => {
+      this.allCheckboxesChecked = this.basvuruForm.get('acikRiza')?.value &&
+                                  this.basvuruForm.get('aydinlatmaMetni')?.value &&
+                                  this.basvuruForm.get('gizlilikSozlesmesi')?.value;
+    });    
+  }
+
+
+  openPopup(metin: 'acikRizaMetni' | 'aydinlatmaMetni' | 'gizlilikSozlesmesi') {
+    let filePath = '';
+
+    switch (metin) {
+      case 'acikRizaMetni':
+        filePath = 'assets/uretio-acik-riza-metni.txt';
+        break;
+      case 'aydinlatmaMetni':
+        filePath = 'assets/uretio-aydinlatma-metni.txt';
+        break;
+      case 'gizlilikSozlesmesi':
+        filePath = 'assets/uretio-gizlilik-sozlesmesi.txt';
+        break;
+    }
+
+    // Fetch the text file
+    this.http.get(filePath, { responseType: 'text' }).subscribe((content) => {
+      this.popupData = {
+        title: this.getPopupTitle(metin),
+        content: content
+      };
+      this.modalService.open(this.popupTemplate);
+    });
+  }
+
+  getPopupTitle(metin: string): string {
+    switch (metin) {
+      case 'acikRizaMetni':
+        return 'Açık Rıza Metni';
+      case 'aydinlatmaMetni':
+        return 'Aydınlatma Metni';
+      case 'gizlilikSozlesmesi':
+        return 'Gizlilik Sözleşmesi';
+      default:
+        return '';
+    }
+  }
+
+  closePopup() {
+    this.modalService.dismissAll();
   }
 
   get kisiselForm(): FormGroup {
@@ -206,6 +268,7 @@ export class BasvuruComponent implements OnInit {
   
       // İletişim Bilgileri
       formData.append('Phone', this.iletisimForm.get('telefon')?.value);
+      formData.append('mail', this.iletisimForm.get('mail')?.value);
       formData.append('City', this.iletisimForm.get('sehir')?.value);
       formData.append('ShippingAddress', this.iletisimForm.get('kargoAdresi')?.value);
   
@@ -215,29 +278,27 @@ export class BasvuruComponent implements OnInit {
       formData.append('HasPets', this.aileForm.get('evcilHayvanDurumu')?.value);
   
       // Portfolyo
-      formData.append('YouTubeProfile', this.portfolyoForm.get('youtubeProfil')?.value);
+      formData.append('YouTubeProfile', this.portfolyoForm.get('youtubeProfil')?.value || 'yok');
       formData.append('InstagramProfile', this.portfolyoForm.get('instagramProfil')?.value);
-      formData.append('TikTokProfile', this.portfolyoForm.get('tiktokProfil')?.value);
+      formData.append('TikTokProfile', this.portfolyoForm.get('tiktokProfil')?.value|| 'yok');
       formData.append('VideoLink1', this.portfolyoForm.get('cekilenVideo1')?.value);
-      formData.append('VideoLink2', this.portfolyoForm.get('cekilenVideo2')?.value);
-      formData.append('VideoLink3', this.portfolyoForm.get('cekilenVideo3')?.value);
+      formData.append('VideoLink2', this.portfolyoForm.get('cekilenVideo2')?.value|| 'yok');
+      formData.append('VideoLink3', this.portfolyoForm.get('cekilenVideo3')?.value|| 'yok');
   
       // API isteği
-      this.http.post('http://localhost:5227/api/Basvurular', formData).subscribe(
+      this.http.post(`${API_URL}/Basvurular/basvuru`, formData).subscribe(
         (response) => {
-          console.log('Başvuru başarılı', response);
           this.submittedData = this.basvuruForm.value;
           this.submittedData.kisiselBilgiler.profilFoto = this.selectedImage;
           this.currentStep = 5;
           this.isSubmitting = false; // Başvuru tamamlandı
         },
         (error) => {
-          console.error('Başvuru hatası', error);
           this.isSubmitting = false; // Hata durumunda tekrar gönderime izin ver
         }
-      );
+      );  
     } else {
-      console.log('Form Eksik');
+      this.basvuruForm.markAllAsTouched();
     }
   }
   

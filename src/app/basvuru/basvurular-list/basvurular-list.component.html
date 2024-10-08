@@ -1,0 +1,24 @@
+<div class="basvurular-list">
+    <h2>Başvurular</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ad Soyad</th>
+          <th>E-posta</th>
+          <th>Tarih</th>
+          <th>Detaylar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let basvuru of basvurular">
+          <td>{{ basvuru.id }}</td>
+          <td>{{ basvuru.fullName }}</td>
+          <td>{{ basvuru.mail }}</td>
+          <td>{{ basvuru.createdAt | date:'short' }}</td>
+          <td><button (click)="viewDetails(basvuru.id)">Görüntüle</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

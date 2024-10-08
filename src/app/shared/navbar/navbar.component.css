@@ -1,0 +1,77 @@
+/* Genel kutu modeli ayarı */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Navbar Ayarları */
+.bottom-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0; /* Eklendi */
+  width: 100%;
+  background-color: #5076f6; /* Mor renk */
+  padding: 10px 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  z-index: 1000;
+}
+
+/* Menü Liste Ayarları */
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  justify-content: space-between; /* Güncellendi */
+  padding: 0 20px; /* İsteğe bağlı iç boşluk */
+  margin: 0;
+  width: 100%;
+}
+
+/* Menü Öğesi Ayarları */
+.menu-item {
+  text-align: center;
+  flex: 1; /* Eklendi */
+}
+
+/* Bağlantı Ayarları */
+.menu-item a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Resim Ayarları */
+.menu-item img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+}
+
+/* Hover ve Odak Durumu */
+.menu-item a:hover,
+.menu-item a:focus {
+  color: #cce1ff; /* Hover yapıldığında daha açık bir renk */
+}
+
+/* Aktif Bağlantı Ayarları */
+.menu-item a.active {
+  background-color: #fff;
+  color: #5076f6;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/* Mobil Cihazlar için Medya Sorgusu */
+@media (max-width: 768px) {
+  .menu-item img {
+      width: 20px;
+      height: 20px;
+  }
+
+  .menu-item a {
+      font-size: 0.8rem;
+  }
+}
