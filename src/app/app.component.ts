@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { NavbarComponent } from "./shared/navbar/navbar.component";
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -11,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, CommonModule, RouterLink, RouterLinkActive, HttpClientModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] // Doğru yazım
 })
 export class AppComponent {
   title = 'uretio';
@@ -26,7 +25,10 @@ export class AppComponent {
   }
 
   showNavbar(): boolean {
-    return this.currentUrl !== '/login' && this.currentUrl !== '/forgot-password' && this.currentUrl !== '/change-password' && this.currentUrl !== '/admin-login';
+    return this.currentUrl !== '/login' &&
+           this.currentUrl !== '/forgot-password' &&
+           this.currentUrl !== '/change-password' &&
+           this.currentUrl !== '/admin-login';
   }
-
 }
+

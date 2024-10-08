@@ -13,12 +13,13 @@ import { AuthGuard } from './auth/auth.guard';
 import { app } from '../../server';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth-interceptor.service';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 
 @NgModule({
   declarations: [
   ],
   imports: [
-    AppComponent,
+    NavbarComponent,
     BrowserModule,
     RouterModule.forRoot(routes),
     HttpClientModule,
@@ -30,6 +31,6 @@ import { AuthInterceptor } from './auth/auth-interceptor.service';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-  ],
+  ]
 })
 export class AppModule { }

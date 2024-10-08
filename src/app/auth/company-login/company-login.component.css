@@ -25,7 +25,7 @@
   }
   
   .form-group input.form-control {
-    width: 100%;
+    width: 95%;
     padding: 10px 12px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -64,5 +64,14 @@
   
   .btn:hover {
     background-color: #3b5dc9;
+  }
+  .logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    max-width: 150px;
+    height: auto;
   }
   
